@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { ShoppingListService } from '../../services/shopping-list/shopping-list.service';
+import { Observable } from 'rxjs/Observable';
+import { Item } from '../../models/item/item.model';
 
 /**
  * Generated class for the HomePage page.
@@ -14,8 +17,21 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'home.html',
 })
 export class HomePage {
+  shoppingList$: Observable<Item[]>;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private shopping: ShoppingListService) {
+    this.shoppingList$ = this.shopping
+      .getShoppingList()
+      .snapshotChanges()
+      .map(
+        changes => {
+          return changes.map(c=> 
+          {
+            key: c.payload.key,
+            ...c.payload.val();
+          })
+        }
+      )
   }
 
   ionViewDidLoad() {
