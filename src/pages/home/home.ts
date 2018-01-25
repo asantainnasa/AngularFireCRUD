@@ -21,17 +21,15 @@ export class HomePage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private shopping: ShoppingListService) {
     this.shoppingList$ = this.shopping
-      .getShoppingList()
-      .snapshotChanges()
-      .map(
+      .getShoppingList()  // DBV List
+      .snapshotChanges()  // key and value pairs
+      .map( 
         changes => {
-          return changes.map(c=> 
-          {
+          return changes.map(c=> ({
             key: c.payload.key,
-            ...c.payload.val();
-          })
-        }
-      )
+            ...c.payload.val(),
+          }));
+        });
   }
 
   ionViewDidLoad() {
